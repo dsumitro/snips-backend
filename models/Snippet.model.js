@@ -1,5 +1,6 @@
 const fs = require('fs').promises;
 const path = require('path');
+const shortid = require('shortid');
 
 /**
  * @typedef {Object} Snippet
@@ -14,6 +15,42 @@ const path = require('path');
  */
 
 /* Create */
+/**
+ * Inserts a new snippet into the db.
+ * @param {Snippet} newSnippet - the data to create the snippet with
+ * @returns {Promise<Snippet>} - the created snippet
+ */
+exports.insert = async ({ author, code, title, description, language }) => {
+  try {
+    if (!author || !code || !title || !description || !language)
+      throw Error('Missing properties');
+
+    // read snippets.json
+    const dbpath = path.join(__dirname, '..', 'db', 'snippets.json');
+    const snippets = JSON.parse(await fs.readFile(dbpath));
+    // grab data from newSnippet (validate)
+    // generate default data (id, comments, favorites)
+    // make newSnippet a proper object
+    // push that object into snippets
+    snippets.push({
+      id: shortid.generate(),
+      author,
+      code,
+      title,
+      description,
+      language,
+      comments: [],
+      favorites: 0,
+    });
+    // write to the file
+    await fs.writeFile(dbpath, JSON.stringify(snippets));
+    return snippets[snippets.length - 1];
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
+
 /* Read */
 // can still run if there is no/empty query because default argument
 
@@ -44,7 +81,7 @@ exports.select = async (query = {}) => {
     // 3. return data
     return filtered;
   } catch (err) {
-    console.log('ERROR in Snippet model');
+    console.error('ERROR in Snippet model');
     throw err;
   }
 };

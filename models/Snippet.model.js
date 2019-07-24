@@ -86,10 +86,22 @@ exports.select = async (query = {}) => {
   }
 };
 /* Update */
-exports.update = async (id, query = {}) => {
+exports.update = async (id, newData = {}) => {
   // 1.read in DB
-  // 2. located entry in DB
-  // 3. change snippet[key] to query[key]
+  const snippets = await readJsonFromDb('snippets');
+  // 2. located snippet with id by map
+  const updatedSnippets = snippets.map(snippet => {
+    // if its not the one we want, just return
+    if (snippet.id !== id) return snippet;
+    // 3. update snippet with approriate data (make sure to validate)
+    Object.keys(newData).forEach(key => {
+      // checks if the target snippet has the key being updated
+      if (key in snippet) snippet[key] = newData[key];
+    });
+    return snippet;
+  });
+  // 4. write back to db
+  return writeJsonToDb('snippets', updatedSnippets);
 };
 
 /* Delete */
@@ -98,7 +110,8 @@ exports.delete = async id => {
     // 1. Read in db
     const snippets = await readJsonFromDb('snippets');
     // 2. filter snippets for everything except snippet.id === id
-    const filtered = snippets.filter(snippet => snippet.description !== id);
+    const filtered = snippets.filter(snippet => snippet.id !== id);
+    if (snippets.length === filtered.length) return;
     // 3. write it back out
     return writeJsonToDb('snippets', filtered);
     // read snippets again because writeJsonToDb doesn't return anything

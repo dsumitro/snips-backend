@@ -1,6 +1,7 @@
 const fs = require('fs').promises;
-const path = require('path');
+// const path = require('path');
 const shortid = require('shortid');
+const { readJsonFromDb, writeJsonToDb } = require('../utils/db.utils');
 
 /**
  * @typedef {Object} Snippet
@@ -26,8 +27,9 @@ exports.insert = async ({ author, code, title, description, language }) => {
       throw Error('Missing properties');
 
     // read snippets.json
-    const dbpath = path.join(__dirname, '..', 'db', 'snippets.json');
-    const snippets = JSON.parse(await fs.readFile(dbpath));
+    // path.join - saferway to creating paths
+    // also checks to make sure people don't access directories they shouldn't
+    const snippets = await readJsonFromDb('snippets');
     // grab data from newSnippet (validate)
     // generate default data (id, comments, favorites)
     // make newSnippet a proper object
@@ -42,8 +44,7 @@ exports.insert = async ({ author, code, title, description, language }) => {
       comments: [],
       favorites: 0,
     });
-    // write to the file
-    await fs.writeFile(dbpath, JSON.stringify(snippets));
+    await writeJsonToDb('snippets', snippets);
     return snippets[snippets.length - 1];
   } catch (err) {
     console.error(err);
@@ -65,8 +66,7 @@ exports.select = async (query = {}) => {
     // 1. read file
     // 2. parse
     // next two lines can be combined but kept separate for clarity atm
-    const dbpath = path.join(__dirname, '..', 'db', 'snippets.json');
-    const snippets = JSON.parse(await fs.readFile(dbpath));
+    const snippets = await readJsonFromDb('snippets');
     // filter data with query
     // check if every query key
     // snippet[key] = query[key]
@@ -86,5 +86,25 @@ exports.select = async (query = {}) => {
   }
 };
 /* Update */
+exports.update = async (id, query = {}) => {
+  // 1.read in DB
+  // 2. located entry in DB
+  // 3. change snippet[key] to query[key]
+};
 
 /* Delete */
+exports.delete = async id => {
+  try {
+    // 1. Read in db
+    const snippets = await readJsonFromDb('snippets');
+    // 2. filter snippets for everything except snippet.id === id
+    const filtered = snippets.filter(snippet => snippet.description !== id);
+    // 3. write it back out
+    return writeJsonToDb('snippets', filtered);
+    // read snippets again because writeJsonToDb doesn't return anything
+    // return readJsonFromDb('snippets');
+  } catch (err) {
+    console.error('ERROR in deleting snippet');
+    throw err;
+  }
+};

@@ -1,13 +1,13 @@
 const Snippet = require('./models/Snippet.model');
 
-async function testModels() {
+async function testSnippetInsert() {
   // const snippets = await Snippet.select();
   try {
     const newSnippet = await Snippet.insert({
-      author: 'CJ',
-      code: ' code, code, code',
+      author: 'DEAN',
+      code: ' testing code',
       title: 'test.js',
-      description: 'This works great!',
+      description: 'works still!',
       language: 'Javascript',
     });
     console.log(newSnippet);
@@ -16,4 +16,14 @@ async function testModels() {
   }
 }
 
-testModels();
+async function testSnippetSelect() {
+  const snippets = await Snippet.select();
+  console.log(snippets);
+}
+
+async function testSnippetDelete() {
+  return Snippet.delete('wqXeIxsaj');
+}
+// testSnippetInsert();
+// testSnippetSelect();
+testSnippetDelete();

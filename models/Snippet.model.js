@@ -1,5 +1,3 @@
-const fs = require('fs').promises;
-// const path = require('path');
 const shortid = require('shortid');
 const { readJsonFromDb, writeJsonToDb } = require('../utils/db.utils');
 
@@ -60,6 +58,7 @@ exports.insert = async ({ author, code, title, description, language }) => {
  * Can accept optional query object to filter results
  * @param {Object} [query]
  * @returns {Promise<Snippet[]>} array of Snippets
+ * other wise returns all snippets
  */
 exports.select = async (query = {}) => {
   try {
@@ -86,6 +85,11 @@ exports.select = async (query = {}) => {
   }
 };
 /* Update */
+/**
+ * Updates a snippet
+ * @param {string} id - id of the snippet to update
+ * @param {Snippet} newData - subset of values to update
+ */
 exports.update = async (id, newData = {}) => {
   // 1.read in DB
   const snippets = await readJsonFromDb('snippets');
@@ -97,6 +101,7 @@ exports.update = async (id, newData = {}) => {
     Object.keys(newData).forEach(key => {
       // checks if the target snippet has the key being updated
       if (key in snippet) snippet[key] = newData[key];
+      // TODO: error if the key doesn't exist
     });
     return snippet;
   });
@@ -104,6 +109,11 @@ exports.update = async (id, newData = {}) => {
   return writeJsonToDb('snippets', updatedSnippets);
 };
 
+/**
+ * Delete a snippet
+ * @param {string} id - specific tag to delete
+ * @returns {Promise<Snippet[]>} array of Snippets
+ */
 /* Delete */
 exports.delete = async id => {
   try {
@@ -112,6 +122,7 @@ exports.delete = async id => {
     // 2. filter snippets for everything except snippet.id === id
     const filtered = snippets.filter(snippet => snippet.id !== id);
     if (snippets.length === filtered.length) return;
+    // TODO: Maybe error here?
     // 3. write it back out
     return writeJsonToDb('snippets', filtered);
     // read snippets again because writeJsonToDb doesn't return anything

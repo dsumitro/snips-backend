@@ -46,7 +46,7 @@ exports.insert = async ({ author, code, title, description, language }) => {
     return snippets[snippets.length - 1];
   } catch (err) {
     if (err instanceof HTTPError) throw err;
-    else throw new HTTPError('Database error');
+    else throw new HTTPError('Database error', 500);
   }
 };
 
@@ -77,10 +77,13 @@ exports.select = async (query = {}) => {
     const filtered = snippets.filter(snippet =>
       Object.keys(query).every(key => query[key] === snippet[key])
     );
+    if (snippets.length === filtered.length)
+      throw new HTTPError('Invalid Query Properties', 500);
     // 3. return data
     return filtered;
   } catch (err) {
-    throw HTTPError('Database Error', 500);
+    if (err instanceof HTTPError) throw err;
+    throw new HTTPError('Database Error', 500);
   }
 };
 /* Update */
@@ -90,23 +93,29 @@ exports.select = async (query = {}) => {
  * @param {Snippet} newData - subset of values to update
  */
 exports.update = async (id, newData = {}) => {
-  // TODO: errpr on id not found
   // 1.read in DB
-  const snippets = await readJsonFromDb('snippets');
-  // 2. located snippet with id by map
-  const updatedSnippets = snippets.map(snippet => {
-    // if its not the one we want, just return
-    if (snippet.id !== id) return snippet;
-    // 3. update snippet with approriate data (make sure to validate)
-    Object.keys(newData).forEach(key => {
-      // checks if the target snippet has the key being updated
-      if (key in snippet) snippet[key] = newData[key];
-      // TODO: 400 error if the key doesn't exist
+  try {
+    const snippets = await readJsonFromDb('snippets');
+    if (snippets.every(snippet => snippet.id !== id))
+      throw new HTTPError('Could not update! ID not found', 404);
+    // 2. located snippet with id by map
+    const updatedSnippets = snippets.map(snippet => {
+      // if its not the one we want, just return
+      if (snippet.id !== id) return snippet;
+      // 3. update snippet with approriate data (make sure to validate)
+      Object.keys(newData).forEach(key => {
+        // checks if the target snippet has the key being updated
+        if (key in snippet) snippet[key] = newData[key];
+        else throw new HTTPError('Could not update! Property not Found', 404);
+      });
+      return snippet;
     });
-    return snippet;
-  });
-  // 4. write back to db
-  return writeJsonToDb('snippets', updatedSnippets);
+    // 4. write back to db
+    return writeJsonToDb('snippets', updatedSnippets);
+  } catch (err) {
+    if (err instanceof HTTPError) throw err;
+    throw new HTTPError('Database Error', 500);
+  }
 };
 
 /**
@@ -119,6 +128,8 @@ exports.delete = async id => {
   try {
     // 1. Read in db
     const snippets = await readJsonFromDb('snippets');
+    if (snippets.every(snippet => snippet.id !== id))
+      throw new HTTPError('Could not delete! ID not found', 404);
     // 2. filter snippets for everything except snippet.id === id
     const filtered = snippets.filter(snippet => snippet.id !== id);
     if (snippets.length === filtered.length) return;
@@ -128,7 +139,7 @@ exports.delete = async id => {
     // read snippets again because writeJsonToDb doesn't return anything
     // return readJsonFromDb('snippets');
   } catch (err) {
-    console.error('ERROR in deleting snippet');
-    throw err;
+    if (err instanceof HTTPError) throw err;
+    throw new HTTPError('Database Error', 500);
   }
 };

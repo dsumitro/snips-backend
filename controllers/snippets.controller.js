@@ -40,3 +40,24 @@ exports.getSnippetById = async (request, response) => {
   // one liner but not as clear
   // response.send(await Snippet.select(request.params))
 };
+
+exports.updateSnippet = async (request, response, next) => {
+  try {
+    // some documentation for Andrew
+    const { id } = request.params;
+    await Snippet.update(id, request.body);
+    response.send('Snippet Updated');
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.deleteSnippet = async (request, response, next) => {
+  try {
+    const { id } = request.params;
+    await Snippet.delete(id);
+    response.status(200).send('Snippet Deleted!');
+  } catch (err) {
+    next(err);
+  }
+};

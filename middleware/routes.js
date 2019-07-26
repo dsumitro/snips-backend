@@ -22,16 +22,9 @@ router.post('/api/snippets', snippets.createSnippet);
 // GET /snippets
 router.get('/api/snippets', snippets.getAllSnippets);
 // GET /snippets/:id
-router.get('/api/snippets/:id', (request, response) => {
-  // 1. get data from Snippets model
-  // const snippet = await Snippet.select();
-  // 2. send it out
-  // response.send(snippet);
-});
+router.get('/api/snippets/:id', snippets.getSnippetById);
 // PATCH /snippets/:id
-router.patch('/api/snippets/:id', (request, response) => {
-  console.log('PATCH /snippets/:id');
-});
+router.patch('/api/snippets/:id', (request, response) => {});
 // DELETE /snippets/:id
 router.delete('/api/snippets/:id', (request, response) => {});
 

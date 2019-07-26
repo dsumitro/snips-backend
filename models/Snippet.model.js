@@ -1,6 +1,6 @@
 const shortid = require('shortid');
 const { readJsonFromDb, writeJsonToDb } = require('../utils/db.utils');
-
+const HTTPError = require('../utils/ErrorWithHttpStatus');
 /**
  * @typedef {Object} Snippet
  * @property {string} id
@@ -22,7 +22,7 @@ const { readJsonFromDb, writeJsonToDb } = require('../utils/db.utils');
 exports.insert = async ({ author, code, title, description, language }) => {
   try {
     if (!author || !code || !title || !description || !language)
-      throw Error('Missing properties');
+      throw new HTTPError('Missing properties', 400);
 
     // read snippets.json
     // path.join - saferway to creating paths
@@ -45,8 +45,8 @@ exports.insert = async ({ author, code, title, description, language }) => {
     await writeJsonToDb('snippets', snippets);
     return snippets[snippets.length - 1];
   } catch (err) {
-    console.error(err);
-    throw err;
+    if (err instanceof HTTPError) throw err;
+    else throw new HTTPError('Database error');
   }
 };
 
@@ -80,8 +80,7 @@ exports.select = async (query = {}) => {
     // 3. return data
     return filtered;
   } catch (err) {
-    console.error('ERROR in Snippet model');
-    throw err;
+    throw HTTPError('Database Error', 500);
   }
 };
 /* Update */
@@ -91,6 +90,7 @@ exports.select = async (query = {}) => {
  * @param {Snippet} newData - subset of values to update
  */
 exports.update = async (id, newData = {}) => {
+  // TODO: errpr on id not found
   // 1.read in DB
   const snippets = await readJsonFromDb('snippets');
   // 2. located snippet with id by map
@@ -101,7 +101,7 @@ exports.update = async (id, newData = {}) => {
     Object.keys(newData).forEach(key => {
       // checks if the target snippet has the key being updated
       if (key in snippet) snippet[key] = newData[key];
-      // TODO: error if the key doesn't exist
+      // TODO: 400 error if the key doesn't exist
     });
     return snippet;
   });
@@ -122,7 +122,7 @@ exports.delete = async id => {
     // 2. filter snippets for everything except snippet.id === id
     const filtered = snippets.filter(snippet => snippet.id !== id);
     if (snippets.length === filtered.length) return;
-    // TODO: Maybe error here?
+    // TODO: Error if trying to delete snippet that DNE
     // 3. write it back out
     return writeJsonToDb('snippets', filtered);
     // read snippets again because writeJsonToDb doesn't return anything

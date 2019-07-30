@@ -11,9 +11,13 @@ app.use(logger);
 app.use(router);
 app.use(ErrorHandler);
 
-app.listen(5000, () => {
-  console.log('Servering running on port 5000');
+app.listen(process.env.PORT || 5000, () => {
+  console.log('Snips server running on port 5000');
 });
+
+// app.listen(5000, () => {
+//   console.log('Servering running on port 5000');
+// });
 
 // const Snippet = require('./models/Snippet.model');
 

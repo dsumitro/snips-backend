@@ -66,3 +66,5 @@ Method: GET, Path: /api/snippets/12342 | TimeStamp: 1564165979169
 Method: GET, Path: /api/snippets/12342 | TimeStamp: 1564166107340
 Method: GET, Path: /api/snippets | TimeStamp: 1564166147405
 Method: POST, Path: /api/snippets | TimeStamp: 1564167205649
+Method: PATCH, Path: /api/snippets/aGpTgoKrV | TimeStamp: 1564167655669
+Method: PATCH, Path: /api/snippets/aGpTgoK | TimeStamp: 1564167661599

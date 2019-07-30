@@ -77,8 +77,9 @@ exports.select = async (query = {}) => {
     const filtered = snippets.filter(snippet =>
       Object.keys(query).every(key => query[key] === snippet[key])
     );
-    if (snippets.length === filtered.length)
-      throw new HTTPError('Invalid Query Properties', 500);
+    // TODO: fix this error handle
+    // if (snippets.length === filtered.length)
+    //   throw new HTTPError('Invalid Query Properties', 500);
     // 3. return data
     return filtered;
   } catch (err) {

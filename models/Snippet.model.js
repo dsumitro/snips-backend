@@ -107,6 +107,7 @@ exports.select = async (query = {}) => {
  */
 exports.update = async (id, newData = {}) => {
   // 1.read in DB
+  // TODO: Look in to coalesce
   try {
     Object.keys(newData).forEach(async key => {
       // console.log(key, newData[key]);

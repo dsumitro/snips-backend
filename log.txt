@@ -163,3 +163,15 @@ Method: PATCH, Path: /api/snippets/2 | TimeStamp: 1567638610826
 Method: PATCH, Path: /api/snippets/2 | TimeStamp: 1567638768657
 Method: PATCH, Path: /api/snippets/2 | TimeStamp: 1567638998432
 Method: GET, Path: /api/snippets | TimeStamp: 1567639012987
+Method: GET, Path: /api/snippets | TimeStamp: 1567714931007
+Method: POST, Path: /api/snippets | TimeStamp: 1567715090071
+Method: POST, Path: /api/snippets | TimeStamp: 1567715124572
+Method: POST, Path: /api/snippets | TimeStamp: 1567715245601
+Method: POST, Path: /api/snippets | TimeStamp: 1567715274535
+Method: GET, Path: /api/snippets | TimeStamp: 1567715585218
+Method: GET, Path: /api/snippets | TimeStamp: 1567715625190
+Method: GET, Path: /api/snippets | TimeStamp: 1567720094589
+Method: GET, Path: /api/snippets | TimeStamp: 1567720133476
+Method: GET, Path: /api/snippets | TimeStamp: 1567720172806
+Method: GET, Path: /api/snippets | TimeStamp: 1567720244227
+Method: GET, Path: /api/snippets | TimeStamp: 1567720264461

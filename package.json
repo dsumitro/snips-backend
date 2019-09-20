@@ -4,15 +4,13 @@
   "description": "✂✂✂✂✂✂✂✂✂✂✂✂✂✂✂✂✂✂✂✂✂✂✂\r # Snips Backend                       \r ✂✂✂✂✂✂✂✂✂✂✂✂✂✂✂✂✂✂✂✂✂✂✂",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon index.js",
-    "start": "node index.js",
+    "dev": "nodemon",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dsumitro/snips-backend.git"
   },
-  "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
@@ -20,12 +18,15 @@
   },
   "homepage": "https://github.com/dsumitro/snips-backend#readme",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^8.1.0",
     "express": "^4.17.1",
-    "nodemon": "^1.19.1",
+    "jsonwebtoken": "^8.5.1",
+    "nodemon": "^1.19.2",
     "pg": "^7.12.1",
     "pg-format": "^1.0.4",
-    "shortid": "^2.2.14"
+    "react": "^16.9.0",
+    "react-dom": "^16.9.0"
   }
 }

@@ -11,7 +11,7 @@ beforeAll(async () => {
 });
 
 describe('Snippets', () => {
-  describe('GET/api/snips', () => {
+  describe('GET /api/snips', () => {
     it('should get all the snips ', async () => {
       // test the /api/snips route
       const response = await request(app).get('/api/snippets');

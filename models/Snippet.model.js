@@ -1,7 +1,7 @@
 const format = require('pg-format');
-const shortid = require('shortid');
+// const shortid = require('shortid');
 const db = require('../db');
-const { readJsonFromDb, writeJsonToDb } = require('../utils/db.utils');
+// const { readJsonFromDb, writeJsonToDb } = require('../utils/db.utils');
 const HTTPError = require('../utils/ErrorWithHttpStatus');
 /**
  * @typedef {Object} Snippet
